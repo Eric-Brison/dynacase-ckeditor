@@ -23,14 +23,14 @@ set_include_path(get_include_path().PATH_SEPARATOR.$WIFF_CONTEXT_ROOT.PATH_SEPAR
 
 include_once('WHAT/Lib.System.php');
 
-$ck_tgz = $argv[1];
-if( $ck_tgz === NULL ) {
+$ck_zip = $argv[1];
+if( $ck_zip === NULL ) {
   print sprintf("Missing CKeditor archive argument\n");
   exit(1);
 }
-$ck_tgz = realpath($ck_tgz);
-if( ! is_file($ck_tgz) ) {
-  print sprintf("CKeditor archive not found at '%s'\n", $ck_tgz);
+$ck_zip = realpath($ck_zip);
+if( ! is_file($ck_zip) ) {
+  print sprintf("CKeditor archive not found at '%s'\n", $ck_zip);
   exit(1);
 }
 
@@ -40,7 +40,7 @@ if( $ret === false ) {
   exit(1);
 }
 
-$tmpfile = LibSystem::tempnam(null, 'ckeditor_untar');
+$tmpfile = LibSystem::tempnam(null, 'ckeditor_unzip');
 if( $tmpfile === false ) {
   print sprintf("Could not create temporary file\n");
   exit(1);
@@ -55,14 +55,14 @@ if( $ret === false ) {
 }
 
 // Unpack archive in tempdir
-$cmd = sprintf('tar -C "%s" -zxf "%s" > "%s" 2>&1', escapeshellcmd($tempdir), escapeshellcmd($ck_tgz), escapeshellcmd($tmpfile));
+$cmd = sprintf('unzip "%s" -d "%s" > "%s" 2>&1', escapeshellcmd($ck_zip), escapeshellcmd($tempdir), escapeshellcmd($tmpfile));
 system($cmd, $ret);
 
 $output = file_get_contents($tmpfile);
 @unlink($tmpfile);
 
 if( $ret !== 0 ) {
-  print sprintf('Error tar -C "%s" -zcf "%s"\n', $tempdir, escapeshellcmd($ck_tgz));
+  print sprintf('Error unzip "%s" -d "%s" > "%s"\n', $tempdir, escapeshellcmd($ck_zip), escapeshellcmd($tmpfile));
   exit(1);
 }
 
