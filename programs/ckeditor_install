@@ -34,7 +34,7 @@ if( ! is_file($ck_zip) ) {
   exit(1);
 }
 
-$ret = chdir(sprintf("%s", $WIFF_CONTEXT_ROOT));
+$ret = chdir($WIFF_CONTEXT_ROOT);
 if( $ret === false ) {
   print sprintf("Could not change directory to '%s'\n", $WIFF_CONTEXT_ROOT);
   exit(1);
@@ -55,28 +55,28 @@ if( $ret === false ) {
 }
 
 // Unpack archive in tempdir
-$cmd = sprintf('unzip "%s" -d "%s" > "%s" 2>&1', escapeshellcmd($ck_zip), escapeshellcmd($tempdir), escapeshellcmd($tmpfile));
+$cmd = sprintf('unzip %s -d %s > %s 2>&1', escapeshellarg($ck_zip), escapeshellarg($tempdir), escapeshellarg($tmpfile));
 system($cmd, $ret);
 
 $output = file_get_contents($tmpfile);
 @unlink($tmpfile);
 
 if( $ret !== 0 ) {
-  print sprintf('Error unzip "%s" -d "%s" > "%s"\n', $tempdir, escapeshellcmd($ck_zip), escapeshellcmd($tmpfile));
+  print sprintf("Error %s: %s\n", $cmd, $output);
   exit(1);
 }
 
 // Set directory/files rights
-$cmd = sprintf('find "%s" -type d -exec chmod 0755 {} \; > /dev/null 2>&1', escapeshellcmd($tempdir));
+$cmd = sprintf('find %s -type d -exec chmod 0755 {} \; > /dev/null 2>&1', escapeshellarg($tempdir));
 system($cmd, $ret);
 if( $ret !== 0 ) {
-    print sprintf('Error setting rights on directories\n');
+    print sprintf("Error setting rights on directories\n");
     exit(1);
 }
-$cmd = sprintf('find "%s" -type f -exec chmod 0644 {} \; > /dev/null 2>&1', escapeshellcmd($tempdir));
+$cmd = sprintf('find %s -type f -exec chmod 0644 {} \; > /dev/null 2>&1', escapeshellarg($tempdir));
 system($cmd, $ret);
 if( $ret !== 0 ) {
-    print sprintf('Error setting rights on files\n');
+    print sprintf("Error setting rights on files\n");
     exit(1);
 }
 
@@ -109,16 +109,16 @@ if( ! is_dir('ckeditor') ) {
 }
 
 // Copy new ckeditor files over existing ckeditor directory
-$cmd = sprintf('tar -C "%s/%s" -cf - . | tar -C "%s" -xf -', escapeshellcmd($tempdir), escapeshellcmd($fck_subdir), "ckeditor");
+$cmd = sprintf('tar -C %s -cf - . | tar -C %s -xf -', escapeshellarg($tempdir . DIRECTORY_SEPARATOR . $fck_subdir), escapeshellarg("ckeditor"));
 system($cmd, $ret);
 
 if( $ret !== 0 ) {
-  print sprintf('Error copying fck files (%s)\n', $cmd);
+  print sprintf("Error copying fck files (%s)\n", $cmd);
   exit(1);
 }
 
 // Cleanup tempdir
-$cmd = sprintf('rm -Rf "%s"', escapeshellcmd($tempdir));
+$cmd = sprintf('rm -Rf %s', escapeshellarg($tempdir));
 system($cmd, $ret);
 
 exit(0);
