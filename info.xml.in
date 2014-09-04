@@ -1,9 +1,10 @@
 <?xml version="1.0"?>
-<module name="dynacase-ckeditor-installer" version="@VERSION@" release="@RELEASE@" basecomponent="no" >
+<module name="@PACKAGE@" version="@VERSION@" release="@RELEASE@" basecomponent="no" >
 
   <description>This HTML text editor brings to the web many of the powerful functionalities of desktop editors like MS Word. It's lightweight and doesnt require any kind of installation on the client computer.</description>
 
   <replaces>
+    <module name="dynacase-ckeditor-installer" />
     <module name="dynacase-ckeditor" />
   </replaces>
 
@@ -26,11 +27,11 @@
   </pre-upgrade>
 
   <post-install>
-    <download href="@ckeditor_url" action="programs/ckeditor_install"><label lang="en">Download and install CKeditor</label></download>
+    <download href="@ckeditor_url" action="programs/ckeditor3_install"><label lang="en">Download and install CKeditor</label></download>
   </post-install>
 
   <post-upgrade>
-    <download href="@ckeditor_url" action="programs/ckeditor_install"><label lang="en">Download and install CKeditor</label></download>
+    <download href="@ckeditor_url" action="programs/ckeditor3_install"><label lang="en">Download and install CKeditor</label></download>
   </post-upgrade>
 
 </module>

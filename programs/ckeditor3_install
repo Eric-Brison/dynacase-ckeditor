@@ -100,16 +100,23 @@ if( $fck_subdir === false ) {
 }
 
 // Create ckeditor dir if it does not exists
-if( ! is_dir('ckeditor') ) {
-  $ret = mkdir('ckeditor');
+if( ! is_dir('lib/ckeditor') ) {
+  $ret = mkdir('lib/ckeditor');
   if( $ret === false ) {
-    print sprintf("Could not create 'ckeditor' directory\n");
+    print sprintf("Could not create 'lib/ckeditor' directory\n");
+    exit(1);
+  }
+}
+if( ! is_dir('lib/ckeditor/3') ) {
+  $ret = mkdir('lib/ckeditor/3');
+  if( $ret === false ) {
+    print sprintf("Could not create 'lib/ckeditor/3' directory\n");
     exit(1);
   }
 }
 
 // Copy new ckeditor files over existing ckeditor directory
-$cmd = sprintf('tar -C "%s/%s" -cf - . | tar -C "%s" -xf -', escapeshellcmd($tempdir), escapeshellcmd($fck_subdir), "ckeditor");
+$cmd = sprintf('tar -C "%s/%s" -cf - . | tar -C "%s" -xf -', escapeshellcmd($tempdir), escapeshellcmd($fck_subdir), "lib/ckeditor/3");
 system($cmd, $ret);
 
 if( $ret !== 0 ) {
